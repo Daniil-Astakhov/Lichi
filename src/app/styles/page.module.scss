@@ -1,0 +1,174 @@
+.container {
+  display: flex;
+  margin: 0 auto;
+  max-width: 1920px;
+}
+.img {
+  display: flex;
+  justify-content: center;
+  width: 33vw;
+  height: 43vw;
+}
+.name {
+  margin: 0 auto;
+  margin-top: 1.5vw;
+  white-space: nowrap;
+  text-align: center;
+  height: 25px;
+  padding: 5px;
+  color: #313434;
+  font-size: 14px;
+}
+.scrollHide {
+  opacity: 0;
+}
+.imgWrap {
+  position: relative;
+}
+
+.descriptionMobile {
+  display: none;
+}
+.scroll {
+  position: absolute;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  bottom: 40px;
+  right: 30px;
+  cursor: pointer;
+  border-bottom: 1px solid #000;
+  span {
+    top: 0;
+    left: 5px;
+    position: relative;
+    width: 1px;
+    height: 20px;
+    transform: rotate(45deg);
+    background: #000;
+    transition: all 0.2s ease-in;
+    &::after {
+      content: "";
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      width: 1px;
+      height: 20px;
+      transform: rotate(90deg);
+      background: #000;
+    }
+  }
+  &:hover {
+    span {
+      top: -10px;
+    }
+  }
+}
+
+.description {
+  position: absolute;
+  bottom: -5px;
+  left: -5px;
+  opacity: 0;
+  height: max-content;
+  width: 101%;
+  padding: 5px;
+  transition: 0.3s all;
+  p {
+    padding: 10px;
+    height: max-content;
+    text-align: center;
+    color: #313434;
+    background: #ffffffe7;
+    font-size: 14px;
+  }
+  ul {
+    display: none;
+  }
+}
+.price {
+  position: relative;
+  height: 25px;
+  font-size: 12px;
+  margin-top: 0px;
+  text-align: center;
+  font-weight: 500;
+  color: #1d1d1d;
+}
+
+.itemWrap {
+  box-sizing: border-box;
+  position: relative;
+  &:hover {
+    .description {
+      opacity: 1;
+    }
+  }
+}
+.App {
+  width: 100%;
+  height: 100vh;
+}
+@media (max-width: 768px) {
+  .imgWrap {
+    width: 45vw;
+  }
+  .name {
+    margin: 0 auto;
+    margin-top: 0px;
+  }
+  .img {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 60vw;
+  }
+  .description {
+    display: none;
+    position: relative;
+    top: 0px;
+    opacity: 1;
+    height: 35px;
+    width: 100%;
+    padding: 0;
+    p {
+      text-align: center;
+      height: 30px;
+      overflow: auto;
+      color: #313434;
+      background: #ffffffe7;
+      font-size: 10px;
+    }
+    ul {
+      display: none;
+    }
+  }
+  .descriptionMobile {
+    display: block;
+    position: relative;
+    top: 0px;
+    opacity: 1;
+    height: 25px;
+    width: 100%;
+    padding: 0;
+    p {
+      text-align: center;
+      height: 25px;
+      overflow: auto;
+      color: #313434;
+      background: #ffffffe7;
+      font-size: 10px;
+    }
+    ul {
+      display: none;
+    }
+  }
+  .price {
+    font-size: 10px;
+    height: 20px;
+    margin-top: 2px;
+    text-align: center;
+    font-weight: 500;
+    color: #1d1d1d;
+  }
+}

@@ -1,0 +1,53 @@
+@import url("https://fonts.cdnfonts.com/css/futura-pt");
+
+:root {
+  --max-width: 1100px;
+}
+
+* {
+  font-family: "Futura PT", sans-serif;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.BaseTable__row-cell {
+  padding: 10px;
+  border-bottom: none;
+}
+
+.BaseTable__row {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  left: -10px !important;
+  border-bottom: none;
+}
+
+.no-border-row {
+  border-bottom: none !important;
+}
+
+.BaseTable__row:hover {
+  background-color: transparent !important;
+}
