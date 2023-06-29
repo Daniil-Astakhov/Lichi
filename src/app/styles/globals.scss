@@ -51,3 +51,8 @@ a {
 .BaseTable__row:hover {
   background-color: transparent !important;
 }
+@media (max-width: 768px) {
+  .BaseTable__row {
+    left: 0 !important;
+  }
+}
