@@ -1,20 +1,24 @@
 "use client";
 import "../../styles/globals.scss";
 import BaseTable, { Column, AutoResizer } from "react-base-table";
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useContext } from "react";
 import Loading from "../loading";
 import { fetchData } from "../../lib/getProductList";
 import styles from "../../styles/page.module.scss";
 import "react-base-table/styles.css";
+import { AppContext } from "../../AppContext";
 
 export default function List() {
+  const { scrollY, setScrollY } = useContext(AppContext);
   const [items, setItems] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(null);
   const [scrollContainer, setScrollContainer] = useState(null);
-  const [scrollTop, setScrollTop] = useState(null);
 
   const ITEMS_LENGTH = 24;
   const MAX_COLUMNS = windowWidth <= 768 ? 2 : 3;
+
+  //This logic should be replaced with dynamic data loading
+  // and canceling the need to reload the page when changing the screen width to 768px
   const visibleItems = items?.slice(0, Math.ceil(items.length / MAX_COLUMNS));
   const keys = Array.from(Array(MAX_COLUMNS).keys(), (i) => `column-${i}`);
 
@@ -26,9 +30,11 @@ export default function List() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [items]);
 
+  //We can replace the data approach with ref by replacing part of the react-base-table source library code. "Костыль"
   useEffect(() => {
+    setWindowWidth(window.innerWidth);
     setTimeout(() => {
       setScrollContainer(document.querySelector(".BaseTable__body"));
     }, 500);
@@ -38,9 +44,11 @@ export default function List() {
     if (scrollContainer) {
       const handleScroll = () => {
         const { scrollTop } = scrollContainer;
-        setScrollTop(scrollTop);
+        setScrollY(scrollTop);
       };
+
       scrollContainer.addEventListener("scroll", handleScroll);
+
       return () => {
         scrollContainer.removeEventListener("scroll", handleScroll);
       };
@@ -49,11 +57,7 @@ export default function List() {
 
   useEffect(() => {
     fetchData(ITEMS_LENGTH).then((data) => {
-      if (Array.isArray(data)) {
-        setItems(data);
-      } else {
-        throw new Error("Data is not in the expected format");
-      }
+      setItems(data);
     });
   }, []);
 
@@ -142,7 +146,7 @@ export default function List() {
         )}
       </AutoResizer>
       <div
-        className={scrollTop > 600 ? styles.scroll : styles.scrollHide}
+        className={scrollY > 600 ? styles.scroll : styles.scrollHide}
         onClick={handleScrollToTop}
       >
         <span></span>
