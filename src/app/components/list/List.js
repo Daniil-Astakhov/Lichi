@@ -2,11 +2,11 @@
 import "../../styles/globals.scss";
 import BaseTable, { Column, AutoResizer } from "react-base-table";
 import React, { useCallback, useState, useEffect, useContext } from "react";
+import { AppContext } from "../../AppContext";
 import Loading from "../loading";
 import { fetchData } from "../../lib/getProductList";
 import styles from "../../styles/page.module.scss";
 import "react-base-table/styles.css";
-import { AppContext } from "../../AppContext";
 
 export default function List() {
   const { scrollY, setScrollY } = useContext(AppContext);
@@ -21,6 +21,12 @@ export default function List() {
   // and canceling the need to reload the page when changing the screen width to 768px
   const visibleItems = items?.slice(0, Math.ceil(items.length / MAX_COLUMNS));
   const keys = Array.from(Array(MAX_COLUMNS).keys(), (i) => `column-${i}`);
+
+  useEffect(() => {
+    fetchData(ITEMS_LENGTH).then((data) => {
+      setItems(data);
+    });
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,7 +52,6 @@ export default function List() {
         const { scrollTop } = scrollContainer;
         setScrollY(scrollTop);
       };
-
       scrollContainer.addEventListener("scroll", handleScroll);
 
       return () => {
@@ -54,12 +59,6 @@ export default function List() {
       };
     }
   }, [scrollContainer]);
-
-  useEffect(() => {
-    fetchData(ITEMS_LENGTH).then((data) => {
-      setItems(data);
-    });
-  }, []);
 
   const handleScrollToTop = useCallback(() => {
     if (scrollContainer) {
