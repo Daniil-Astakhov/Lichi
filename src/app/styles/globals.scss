@@ -56,3 +56,8 @@ a {
     left: 0 !important;
   }
 }
+@media (max-width: 564px) {
+  .BaseTable__row {
+    left: -5px !important;
+  }
+}
