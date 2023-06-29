@@ -14,6 +14,8 @@ export default function List() {
   const [windowWidth, setWindowWidth] = useState(null);
   const [scrollContainer, setScrollContainer] = useState(null);
 
+  const ROW_HEIGHT_DESK = 0.76;
+  const ROW_HEIGHT_MOB = 0.51;
   const ITEMS_LENGTH = 24;
   const MAX_COLUMNS = windowWidth <= 768 ? 2 : 3;
 
@@ -123,7 +125,9 @@ export default function List() {
             rowKey="id"
             headerHeight={0}
             rowHeight={
-              windowWidth <= 768 ? windowWidth * 0.76 : windowWidth * 0.51
+              windowWidth <= 768
+                ? windowWidth * ROW_HEIGHT_DESK
+                : windowWidth * ROW_HEIGHT_MOB
             }
             rowClassName="no-border-row"
           >
