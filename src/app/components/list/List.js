@@ -1,12 +1,16 @@
 "use client";
-import "../../styles/globals.scss";
 import BaseTable, { Column, AutoResizer } from "react-base-table";
-import React, { useCallback, useState, useEffect, useContext } from "react";
+import { useCallback, useState, useEffect, useContext } from "react";
+import { fetchData } from "../../lib/getProductList";
 import { AppContext } from "../../AppContext";
 import Loading from "../loading";
-import { fetchData } from "../../lib/getProductList";
+
 import styles from "../../styles/page.module.scss";
 import "react-base-table/styles.css";
+
+const ROW_HEIGHT_DESK = 0.76;
+const ROW_HEIGHT_MOB = 0.51;
+const ITEMS_LENGTH = 24;
 
 export default function List() {
   const { scrollY, setScrollY } = useContext(AppContext);
@@ -14,11 +18,7 @@ export default function List() {
   const [windowWidth, setWindowWidth] = useState(null);
   const [scrollContainer, setScrollContainer] = useState(null);
 
-  const ROW_HEIGHT_DESK = 0.76;
-  const ROW_HEIGHT_MOB = 0.51;
-  const ITEMS_LENGTH = 24;
   const MAX_COLUMNS = windowWidth <= 768 ? 2 : 3;
-
   //This logic should be replaced with dynamic data loading
   // and canceling the need to reload the page when changing the screen width to 768px
   const visibleItems = items?.slice(0, Math.ceil(items.length / MAX_COLUMNS));
@@ -54,8 +54,8 @@ export default function List() {
         const { scrollTop } = scrollContainer;
         setScrollY(scrollTop);
       };
-      scrollContainer.addEventListener("scroll", handleScroll);
 
+      scrollContainer.addEventListener("scroll", handleScroll);
       return () => {
         scrollContainer.removeEventListener("scroll", handleScroll);
       };
@@ -74,36 +74,29 @@ export default function List() {
   const cellRenderer = useCallback(
     (props) => {
       const { rowIndex, columnIndex } = props;
-
       const itemIndex = rowIndex * MAX_COLUMNS + columnIndex;
       const item = items[itemIndex];
 
       return (
-        <div key={itemIndex}>
-          <div className={styles.itemWrap}>
-            <div className={styles.imgWrap}>
-              <img
-                className={styles.img}
-                src={item?.photos[0].big}
-                alt={item?.name}
-              />
-              <div
-                className={styles.description}
-                dangerouslySetInnerHTML={{
-                  __html: item?.descriptions.html || null,
-                }}
-              />
-            </div>
-
-            <div className={styles.name}>{item?.name}</div>
+        <div className={styles.itemWrap} key={itemIndex}>
+          <div className={styles.imgWrap}>
+            <img
+              className={styles.img}
+              src={item?.photos[0].big}
+              alt={item?.name}
+            />
+            <div
+              className={styles.description}
+              dangerouslySetInnerHTML={{__html: item?.descriptions.html || null}}
+            />
             <div
               className={styles.descriptionMobile}
-              dangerouslySetInnerHTML={{
-                __html: item?.descriptions.html || null,
-              }}
+              dangerouslySetInnerHTML={{__html: item?.descriptions.html || null}}
             />
-            <div className={styles.price}>{item?.price} руб.</div>
           </div>
+          <div className={styles.name}>{item?.name}</div>
+
+          <div className={styles.price}>{item?.price} руб.</div>
         </div>
       );
     },

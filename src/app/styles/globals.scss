@@ -31,6 +31,7 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
 .BaseTable__row-cell {
   padding: 10px;
   border-bottom: none;
@@ -40,7 +41,7 @@ a {
   display: flex;
   justify-content: center;
   padding: 10px;
-  left: -10px !important;
+  left: 0px !important;
   border-bottom: none;
 }
 
@@ -48,16 +49,10 @@ a {
   border-bottom: none !important;
 }
 
-.BaseTable__row:hover {
-  background-color: transparent !important;
-}
-@media (max-width: 768px) {
-  .BaseTable__row {
-    left: 0 !important;
+.BaseTable__row {
+  &:hover {
+    background-color: transparent !important;
   }
 }
-@media (max-width: 564px) {
-  .BaseTable__row {
-    left: -5px !important;
-  }
-}
+
+@import "./media.scss";
