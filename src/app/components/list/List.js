@@ -8,8 +8,8 @@ import Loading from "../loading";
 import styles from "../../styles/page.module.scss";
 import "react-base-table/styles.css";
 
-const ROW_HEIGHT_DESK = 0.76;
-const ROW_HEIGHT_MOB = 0.51;
+const ROW_HEIGHT_MOB = 0.72;
+const ROW_HEIGHT_DESK = 0.51;
 const ITEMS_LENGTH = 24;
 
 export default function List() {
@@ -95,7 +95,6 @@ export default function List() {
             />
           </div>
           <div className={styles.name}>{item?.name}</div>
-
           <div className={styles.price}>{item?.price} руб.</div>
         </div>
       );
@@ -119,8 +118,8 @@ export default function List() {
             headerHeight={0}
             rowHeight={
               windowWidth <= 768
-                ? windowWidth * ROW_HEIGHT_DESK
-                : windowWidth * ROW_HEIGHT_MOB
+                ? windowWidth * ROW_HEIGHT_MOB 
+                : windowWidth * ROW_HEIGHT_DESK
             }
             rowClassName="no-border-row"
           >

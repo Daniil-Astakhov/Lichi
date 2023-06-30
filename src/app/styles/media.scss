@@ -3,12 +3,7 @@
     box-sizing: border-box;
     width: 100%;
   }
-  .name {
-    margin: 0 auto;
-    text-overflow: ellipsis;
-    width: 90%;
-    overflow: hidden;
-  }
+
   .img {
     display: flex;
     justify-content: center;
@@ -59,10 +54,7 @@
 
   .price {
     font-size: 10px;
-    height: 25px;
     margin-top: 2px;
-    text-align: center;
-    font-weight: 500;
-    color: #1d1d1d;
+
   }
 }
