@@ -54,7 +54,25 @@
 
   .price {
     font-size: 10px;
-    margin-top: 2px;
 
+
+  }
+}
+@media (max-width: 400px) {
+  .name{
+    margin-top: 0;
+    
+  }
+  .price{
+    height: 30px;
+  }
+}
+@media (max-width: 340px) {
+  .name{
+    margin-top: 0;
+    
+  }
+  .price{
+    font-size: 8px;
   }
 }
