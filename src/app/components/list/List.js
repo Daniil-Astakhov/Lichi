@@ -65,9 +65,7 @@ export default function ListApp() {
   }, [items]);
 
   useEffect(() => {
-    console.log(scrollY, maxScrollHeight);
-    if (scrollY > 100 && scrollY + windowSize.height >= maxScrollHeight) {
-      console.log("Load");
+    if (scrollY > 100 && scrollY + 20 + windowSize.height >= maxScrollHeight) {
       setLoad(true);
     }
     if (scrollContainer) {
