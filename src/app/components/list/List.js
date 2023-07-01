@@ -24,6 +24,7 @@ export default function ListApp() {
   const [page, setPage] = useState(1);
 
   const size = windowSize.width <= 768 ? 2 : 3;
+  const sizeOffset = windowSize.width <= 768 ? 400 : 600;
 
   const isItemLoaded = useCallback(
     (index) => {
@@ -65,7 +66,9 @@ export default function ListApp() {
   }, [items]);
 
   useEffect(() => {
-    if (scrollY > 100 && scrollY + 700 > maxScrollHeight) {
+    console.log(scrollY, maxScrollHeight);
+    if (scrollY > 100 && scrollY + windowSize.height >= maxScrollHeight) {
+      console.log("Load");
       setLoad(true);
     }
     if (scrollContainer) {
