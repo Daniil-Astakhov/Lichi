@@ -1,38 +1,54 @@
 "use client";
-import BaseTable, { Column, AutoResizer } from "react-base-table";
 import { useCallback, useState, useEffect, useContext } from "react";
+import { FixedSizeList as List } from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
 import { fetchData } from "../../lib/getProductList";
 import { AppContext } from "../../AppContext";
-import Loading from "../loading";
+import { Row } from "../row/Row";
+import { Spinner, Loading } from "../loading/spinners";
 
 import styles from "../../styles/page.module.scss";
 import "react-base-table/styles.css";
 
 const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
-const ITEMS_LENGTH = 24;
+const ITEMS_LENGTH = 12;
 
-export default function List() {
+export default function ListApp() {
   const { scrollY, setScrollY } = useContext(AppContext);
   const [items, setItems] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(null);
+  const [windowSize, setWindowSize] = useState({ width: null, height: null });
+  const [maxScrollHeight, setMaxScrollHeight] = useState(null);
   const [scrollContainer, setScrollContainer] = useState(null);
+  const [load, setLoad] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const MAX_COLUMNS = windowWidth <= 768 ? 2 : 3;
-  //This logic should be replaced with dynamic data loading
-  // and canceling the need to reload the page when changing the screen width to 768px
-  const visibleItems = items?.slice(0, Math.ceil(items.length / MAX_COLUMNS));
-  const keys = Array.from(Array(MAX_COLUMNS).keys(), (i) => `column-${i}`);
+  const size = windowSize.width <= 768 ? 2 : 3;
+
+  const isItemLoaded = useCallback(
+    (index) => {
+      return index < items.length && items[index] !== null;
+    },
+    [items]
+  );
+
+  const getWindowSize = () => {
+    setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
 
   useEffect(() => {
-    fetchData(ITEMS_LENGTH).then((data) => {
+    fetchData(ITEMS_LENGTH, page).then((data) => {
       setItems(data);
+      setPage(page + 1);
     });
   }, []);
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      getWindowSize();
     };
     window.addEventListener("resize", handleResize);
     return () => {
@@ -40,27 +56,40 @@ export default function List() {
     };
   }, [items]);
 
-  //We can replace the data approach with ref by replacing part of the react-base-table source library code. "Костыль"
+  //We can replace the data approach with ref by replacing part of the react-window source library code. "Костыль"
   useEffect(() => {
-    setWindowWidth(window.innerWidth);
+    getWindowSize();
     setTimeout(() => {
-      setScrollContainer(document.querySelector(".BaseTable__body"));
+      setScrollContainer(document.querySelector(".List"));
     }, 500);
   }, [items]);
 
   useEffect(() => {
+    if (scrollY > 100 && scrollY + 700 > maxScrollHeight) {
+      setLoad(true);
+    }
     if (scrollContainer) {
       const handleScroll = () => {
         const { scrollTop } = scrollContainer;
+        setMaxScrollHeight(scrollContainer.scrollHeight);
         setScrollY(scrollTop);
       };
-
       scrollContainer.addEventListener("scroll", handleScroll);
       return () => {
         scrollContainer.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [scrollContainer]);
+  }, [scrollY, scrollContainer]);
+
+  useEffect(() => {
+    if (load) {
+      fetchData(ITEMS_LENGTH, page).then((data) => {
+        setItems((prev) => [...prev, ...data]);
+        setLoad(false);
+        setPage(page + 1);
+      });
+    }
+  }, [load]);
 
   const handleScrollToTop = useCallback(() => {
     if (scrollContainer) {
@@ -71,36 +100,16 @@ export default function List() {
     }
   }, [scrollContainer]);
 
-  const cellRenderer = useCallback(
-    (props) => {
-      const { rowIndex, columnIndex } = props;
-      const itemIndex = rowIndex * MAX_COLUMNS + columnIndex;
-      const item = items[itemIndex];
-
-      return (
-        <div className={styles.itemWrap} key={itemIndex}>
-          <div className={styles.imgWrap}>
-            <img
-              className={styles.img}
-              src={item?.photos[0].big}
-              alt={item?.name}
-            />
-            <div
-              className={styles.description}
-              dangerouslySetInnerHTML={{__html: item?.descriptions.html || null}}
-            />
-            <div
-              className={styles.descriptionMobile}
-              dangerouslySetInnerHTML={{__html: item?.descriptions.html || null}}
-            />
-          </div>
-          <div className={styles.name}>{item?.name}</div>
-          <div className={styles.price}>{item?.price} руб.</div>
-        </div>
-      );
-    },
-    [items]
-  );
+  const row = ({ index, style }) => {
+    return (
+      <Row
+        windowWidth={windowSize.width}
+        style={style}
+        index={index}
+        items={items}
+      />
+    );
+  };
 
   if (!items) {
     return <Loading />;
@@ -108,38 +117,31 @@ export default function List() {
 
   return (
     <div className={styles.App}>
-      <AutoResizer>
-        {({ width, height }) => (
-          <BaseTable
-            data={visibleItems}
-            width={width}
-            height={height}
-            rowKey="id"
-            headerHeight={0}
-            rowHeight={
-              windowWidth <= 768
-                ? windowWidth * ROW_HEIGHT_MOB 
-                : windowWidth * ROW_HEIGHT_DESK
+      <InfiniteLoader
+        isItemLoaded={isItemLoaded}
+        itemCount={items.length / size}
+      >
+        {({ onItemsRendered, ref }) => (
+          <List
+            className="List"
+            width={windowSize.width}
+            height={windowSize.height}
+            itemCount={items.length / size}
+            itemSize={
+              windowSize.width <= 768
+                ? windowSize.width * ROW_HEIGHT_MOB
+                : windowSize.width * ROW_HEIGHT_DESK
             }
-            rowClassName="no-border-row"
+            itemData={items}
+            onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
+              onItemsRendered({ visibleStartIndex, visibleStopIndex });
+            }}
+            ref={ref}
           >
-            {keys.map((columnKey) => {
-              return (
-                <Column
-                  key={columnKey}
-                  title={columnKey}
-                  width={
-                    windowWidth <= 768
-                      ? windowWidth * 0.5
-                      : windowWidth * 0.33333
-                  }
-                  cellRenderer={cellRenderer}
-                />
-              );
-            })}
-          </BaseTable>
+            {row}
+          </List>
         )}
-      </AutoResizer>
+      </InfiniteLoader>
       <div
         className={scrollY > 600 ? styles.scroll : styles.scrollHide}
         onClick={handleScrollToTop}
@@ -147,6 +149,7 @@ export default function List() {
         <span></span>
         TOP
       </div>
+      <div className={styles.load}>{load ? <Spinner /> : null}</div>
     </div>
   );
 }

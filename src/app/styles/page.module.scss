@@ -32,7 +32,6 @@
 
 .imgWrap {
   box-sizing: border-box;
-  width: 100%;
   position: relative;
 }
 
@@ -107,15 +106,54 @@
   color: $text-main;
 }
 
-.itemWrap {
+.itemWrap0 {
   box-sizing: border-box;
   position: relative;
-  width: 100%;
+  width: 33.3333% !important;
+  padding: 3px;
   &:hover {
     .description {
       opacity: 1;
     }
   }
+}
+.itemWrap1 {
+  box-sizing: border-box;
+  position: relative;
+  left: 33.3333% !important;
+  width: 33.3333% !important ;
+  padding: 3px;
+  &:hover {
+    .description {
+      opacity: 1;
+    }
+  }
+}
+.itemWrap2 {
+  box-sizing: border-box;
+  position: relative;
+  left: 66.6666% !important;
+  width: 33.3333% !important ;
+  padding: 3px;
+  &:hover {
+    .description {
+      opacity: 1;
+    }
+  }
+}
+.itemWrapMobile {
+  box-sizing: border-box;
+  position: relative;
+  left: 0 !important;
+  width: 50% !important ;
+  padding: 3px;
+}
+.itemWrapMobileSecond {
+  box-sizing: border-box;
+  position: relative;
+  left: 50% !important;
+  width: 50% !important ;
+  padding: 3px;
 }
 
 .App {
@@ -123,7 +161,11 @@
   height: 100vh;
 }
 
-.closeMobile {
-  display: none;
+
+.load {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -44px;
 }
 @import "./media.scss";

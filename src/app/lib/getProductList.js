@@ -1,5 +1,5 @@
 import axios from "axios";
-export const fetchData = async (limit) => {
+export const fetchData = async (limit, page) => {
   try {
     const response = await axios.post(
       "https://api.lichi.com/category/get_category_product_list",
@@ -8,7 +8,7 @@ export const fetchData = async (limit) => {
         lang: 1,
         shop: 1,
         limit: limit,
-        page: 1,
+        page: page,
       }
     );
 
