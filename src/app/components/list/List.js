@@ -8,7 +8,6 @@ import { Row } from "../row/Row";
 import { Spinner, Loading } from "../loading/spinners";
 
 import styles from "../../styles/page.module.scss";
-import "react-base-table/styles.css";
 
 const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
