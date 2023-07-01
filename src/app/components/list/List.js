@@ -23,12 +23,12 @@ export default function ListApp() {
 
   const size = windowSize.width <= 768 ? 2 : 3;
 
-  const getWindowSize = () => {
+  const getWindowSize = useCallback(() => {
     setWindowSize({
       width: window.innerWidth,
       height: window.innerHeight,
     });
-  };
+  }, []);
 
   useEffect(() => {
     fetchData(ITEMS_LENGTH, page).then((data) => {
@@ -45,7 +45,7 @@ export default function ListApp() {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [items]);
+  }, []);
 
   //We can replace the data approach with ref by replacing part of the react-window source library code. "Костыль"
   useEffect(() => {

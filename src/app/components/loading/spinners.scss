@@ -1,8 +1,10 @@
-.spinner {
+@import "../../styles/variables.scss";
+.spinner,
+.data-spinner {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  color: #313434;
+  color: $text-main;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,21 +18,8 @@
 }
 
 .data-spinner {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #313434;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 0vh;
   bottom: 0;
-  &:after {
-    animation: changeContent 0.8s linear infinite;
-    display: block;
-    content: "⠋";
-    font-size: 80px;
-  }
 }
 
 @keyframes changeContent {

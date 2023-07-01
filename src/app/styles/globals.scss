@@ -31,28 +31,3 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
-.BaseTable__row-cell {
-  padding: 10px;
-  border-bottom: none;
-}
-
-.BaseTable__row {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  left: 0px !important;
-  border-bottom: none;
-}
-
-.no-border-row {
-  border-bottom: none !important;
-}
-
-.BaseTable__row {
-  &:hover {
-    background-color: transparent !important;
-  }
-}
-
-@import "./media.scss";
