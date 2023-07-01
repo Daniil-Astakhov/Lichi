@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useState, useEffect, useContext } from "react";
 import { FixedSizeList as List } from "react-window";
-import InfiniteLoader from "react-window-infinite-loader";
 import { fetchData } from "../../lib/getProductList";
 import { AppContext } from "../../AppContext";
 import { Row } from "../row/Row";
@@ -23,14 +22,6 @@ export default function ListApp() {
   const [page, setPage] = useState(1);
 
   const size = windowSize.width <= 768 ? 2 : 3;
-  const sizeOffset = windowSize.width <= 768 ? 400 : 600;
-
-  const isItemLoaded = useCallback(
-    (index) => {
-      return index < items.length && items[index] !== null;
-    },
-    [items]
-  );
 
   const getWindowSize = () => {
     setWindowSize({
@@ -117,31 +108,20 @@ export default function ListApp() {
 
   return (
     <div className={styles.App}>
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
+      <List
+        className="List"
+        width={windowSize.width}
+        height={windowSize.height}
         itemCount={items.length / size}
+        itemSize={
+          windowSize.width <= 768
+            ? windowSize.width * ROW_HEIGHT_MOB
+            : windowSize.width * ROW_HEIGHT_DESK
+        }
+        itemData={items}
       >
-        {({ onItemsRendered, ref }) => (
-          <List
-            className="List"
-            width={windowSize.width}
-            height={windowSize.height}
-            itemCount={items.length / size}
-            itemSize={
-              windowSize.width <= 768
-                ? windowSize.width * ROW_HEIGHT_MOB
-                : windowSize.width * ROW_HEIGHT_DESK
-            }
-            itemData={items}
-            onItemsRendered={({ visibleStartIndex, visibleStopIndex }) => {
-              onItemsRendered({ visibleStartIndex, visibleStopIndex });
-            }}
-            ref={ref}
-          >
-            {row}
-          </List>
-        )}
-      </InfiniteLoader>
+        {row}
+      </List>
       <div
         className={scrollY > 600 ? styles.scroll : styles.scrollHide}
         onClick={handleScrollToTop}
@@ -149,7 +129,7 @@ export default function ListApp() {
         <span></span>
         TOP
       </div>
-      <div className={styles.load}>{load ? <Spinner /> : null}</div>
+      <div className={styles.load}>{load && <Spinner />}</div>
     </div>
   );
 }
