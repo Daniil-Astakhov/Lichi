@@ -1,10 +1,10 @@
 "use client";
 import { useCallback, useState, useEffect, useContext } from "react";
-import { FixedSizeList as List } from "react-window";
 import { fetchData } from "../../lib/getProductList";
 import { AppContext } from "../../AppContext";
 import { Row } from "../row/Row";
-import { Spinner, Loading } from "../loading/spinners";
+import { Spinner, LoadingPage } from "../loading/spinners";
+import VirtualLisl from "./virtualized";
 
 import styles from "../../styles/page.module.scss";
 
@@ -35,9 +35,6 @@ export default function ListApp() {
       setItems(data);
       setPage(page + 1);
     });
-  }, []);
-
-  useEffect(() => {
     const handleResize = () => {
       getWindowSize();
     };
@@ -103,13 +100,12 @@ export default function ListApp() {
   };
 
   if (!items) {
-    return <Loading />;
+    return <LoadingPage />;
   }
 
   return (
     <div className={styles.App}>
-      <List
-        className="List"
+      <VirtualLisl
         width={windowSize.width}
         height={windowSize.height}
         itemCount={items.length / size}
@@ -119,9 +115,8 @@ export default function ListApp() {
             : windowSize.width * ROW_HEIGHT_DESK
         }
         itemData={items}
-      >
-        {row}
-      </List>
+        row={row}
+      />
       <div
         className={scrollY > 600 ? styles.scroll : styles.scrollHide}
         onClick={handleScrollToTop}

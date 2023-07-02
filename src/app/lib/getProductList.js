@@ -13,11 +13,11 @@ export const fetchData = async (limit, page) => {
     );
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch data");
+      throw new Error(`Failed to fetch data. Status: ${response.status}`);
     }
 
     return response.data.api_data.aProduct;
   } catch (error) {
-    throw new Error("Failed to fetch data");
+    throw new Error(error);
   }
 };
