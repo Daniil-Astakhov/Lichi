@@ -1,10 +1,10 @@
 "use client";
-import { useCallback, useState, useEffect, useContext } from "react";
-import { fetchData } from "../../lib/getProductList";
+import {useCallback, useState, useEffect, useContext, useRef, useMemo} from "react";
+import { FixedSizeList as List } from "react-window";
 import { AppContext } from "../../AppContext";
+import { fetchData } from "../../lib/getProductList";
 import { Row } from "../row/Row";
 import { Spinner, LoadingPage } from "../loading/spinners";
-import VirtualLisl from "./virtualized";
 
 import styles from "../../styles/page.module.scss";
 
@@ -12,29 +12,50 @@ const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
 const ITEMS_LENGTH = 12;
 
-export default function ListApp() {
+export const ListApp = () => {
+  const listRef = useRef(null);
+  const [items, setItems] = useState([]);
   const { scrollY, setScrollY } = useContext(AppContext);
-  const [items, setItems] = useState(null);
-  const [windowSize, setWindowSize] = useState({ width: null, height: null });
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [maxScrollHeight, setMaxScrollHeight] = useState(null);
-  const [scrollContainer, setScrollContainer] = useState(null);
   const [load, setLoad] = useState(false);
   const [page, setPage] = useState(1);
 
   const size = windowSize.width <= 768 ? 2 : 3;
 
-  const getWindowSize = useCallback(() => {
+  const getDataList = () => {
+    fetchData(ITEMS_LENGTH, page).then((data) => {
+      setItems((prev) => [...prev, ...data]);
+      setLoad(false);
+      setPage(page + 1);
+    });
+  };
+
+  const itemSize = useMemo(() => {
+    return windowSize.width <= 768
+      ? windowSize.width * ROW_HEIGHT_MOB
+      : windowSize.width * ROW_HEIGHT_DESK;
+  }, [windowSize.width]);
+
+  const getWindowSize = () => {
     setWindowSize({
       width: window.innerWidth,
       height: window.innerHeight,
     });
+  };
+
+  const handleScrollToTop = useCallback(() => {
+    listRef.current.scrollToItem(0);
   }, []);
 
+  const handleScroll = useCallback(({ scrollOffset }) => {
+    setScrollY(scrollOffset);
+  },[]);
+
   useEffect(() => {
-    fetchData(ITEMS_LENGTH, page).then((data) => {
-      setItems(data);
-      setPage(page + 1);
-    });
+    getDataList();
+    getWindowSize();
+
     const handleResize = () => {
       getWindowSize();
     };
@@ -44,79 +65,53 @@ export default function ListApp() {
     };
   }, []);
 
-  //We can replace the data approach with ref by replacing part of the react-window source library code. "Костыль"
   useEffect(() => {
-    getWindowSize();
-    setTimeout(() => {
-      setScrollContainer(document.querySelector(".List"));
-    }, 500);
+    setMaxScrollHeight(listRef.current?._outerRef.firstChild.clientHeight);
   }, [items]);
 
   useEffect(() => {
     if (scrollY > 100 && scrollY + 20 + windowSize.height >= maxScrollHeight) {
       setLoad(true);
     }
-    if (scrollContainer) {
-      const handleScroll = () => {
-        const { scrollTop } = scrollContainer;
-        setMaxScrollHeight(scrollContainer.scrollHeight);
-        setScrollY(scrollTop);
-      };
-      scrollContainer.addEventListener("scroll", handleScroll);
-      return () => {
-        scrollContainer.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [scrollY, scrollContainer]);
+  }, [scrollY]);
 
   useEffect(() => {
     if (load) {
-      fetchData(ITEMS_LENGTH, page).then((data) => {
-        setItems((prev) => [...prev, ...data]);
-        setLoad(false);
-        setPage(page + 1);
-      });
+      getDataList();
     }
   }, [load]);
 
-  const handleScrollToTop = useCallback(() => {
-    if (scrollContainer) {
-      scrollContainer.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  }, [scrollContainer]);
+  const row = useCallback(
+    ({ index, style }) => {
+      return (
+        <Row
+          windowWidth={windowSize.width}
+          style={style}
+          index={index}
+          items={items}
+        />
+      );
+    },
+    [windowSize.width, items]
+  );
 
-  const row = ({ index, style }) => {
-    return (
-      <Row
-        windowWidth={windowSize.width}
-        style={style}
-        index={index}
-        items={items}
-      />
-    );
-  };
-
-  if (!items) {
+  if (!items.length) {
     return <LoadingPage />;
   }
 
   return (
     <div className={styles.App}>
-      <VirtualLisl
+      <List
+        ref={listRef}
+        className="List"
         width={windowSize.width}
         height={windowSize.height}
         itemCount={items.length / size}
-        itemSize={
-          windowSize.width <= 768
-            ? windowSize.width * ROW_HEIGHT_MOB
-            : windowSize.width * ROW_HEIGHT_DESK
-        }
-        itemData={items}
-        row={row}
-      />
+        itemSize={itemSize}
+        onScroll={handleScroll}
+      >
+        {row}
+      </List>
       <div
         className={scrollY > 600 ? styles.scroll : styles.scrollHide}
         onClick={handleScrollToTop}
@@ -127,4 +122,4 @@ export default function ListApp() {
       <div className={styles.load}>{load && <Spinner />}</div>
     </div>
   );
-}
+};
