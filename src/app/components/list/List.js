@@ -103,7 +103,6 @@ export const ListApp = () => {
     <div className={styles.App}>
       <List
         ref={listRef}
-        className="List"
         width={windowSize.width}
         height={windowSize.height}
         itemCount={items.length / size}
