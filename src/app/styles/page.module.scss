@@ -183,4 +183,41 @@
   height: 100%;
   bottom: 40px;
 }
+.productWrap {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: auto;
+  max-height: 100vh;
+}
+
+.cardImgWrap {
+  height: 50%;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.product {
+  width: 58vw;
+  height: max-content;
+}
+.cardDescrWrap {
+  position: relative;
+  width: 100%;
+}
+.cardDescr {
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 300;
+
+  right: 0;
+  top: 10vw;
+}
 @import "./media.scss";

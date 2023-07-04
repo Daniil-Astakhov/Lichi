@@ -17,6 +17,7 @@ export const ListApp = () => {
     scrollY,
     setScrollY,
     items,
+    currentPos,
     setItems,
     maxScrollHeight,
     setMaxScrollHeight,
@@ -67,6 +68,9 @@ export const ListApp = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  useEffect(() => {
+    if (currentPos) listRef.current.scrollToItem(currentPos);
+  }, [listRef.current]);
 
   useEffect(() => {
     setMaxScrollHeight(listRef.current?._outerRef.firstChild.clientHeight);

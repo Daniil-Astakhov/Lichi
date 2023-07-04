@@ -7,6 +7,8 @@ export const useStore = create(
     items: [],
     maxScrollHeight: 0,
     windowSize: { width: 0, height: 0 },
+    currentPos: null,
+    setCurrentPos: (currentPos) => set({ currentPos: currentPos }),
     setWindowSize: (setWindowSize) => set({ windowSize: setWindowSize }),
     setScrollY: (newScrollY) => set({ scrollY: newScrollY }),
     setMaxScrollHeight: (newMaxScrollHeight) =>
