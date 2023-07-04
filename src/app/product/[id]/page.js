@@ -1,15 +1,15 @@
 import styles from "../../styles/page.module.scss";
 
-export const metadata = {
-  title: "Test 1",
-  description: "Test app",
-};
+export function generateMetadata({ searchParams: { name } }) {
+  return {
+    title: name,
+  };
+}
 
 export default function Card({
   params: { id },
   searchParams: { name, pf, price },
 }) {
-  metadata.title = name;
   return (
     <div className={styles.productWrap}>
       <div className={styles.product}>
