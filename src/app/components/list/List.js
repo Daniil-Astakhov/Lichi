@@ -1,12 +1,12 @@
 "use client";
-import {useCallback, useState, useEffect, useContext, useRef, useMemo} from "react";
+import { useCallback, useEffect, useRef, useMemo, useId } from "react";
 import { FixedSizeList as List } from "react-window";
-import { AppContext } from "../../AppContext";
 import { fetchData } from "../../lib/getProductList";
 import { Row } from "../row/Row";
 import { Spinner, LoadingPage } from "../loading/spinners";
 
 import styles from "../../styles/page.module.scss";
+import { useFlag, useStore } from "@/app/store";
 
 const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
@@ -14,18 +14,24 @@ const ITEMS_LENGTH = 12;
 
 export const ListApp = () => {
   const listRef = useRef(null);
-  const [items, setItems] = useState([]);
-  const { scrollY, setScrollY } = useContext(AppContext);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-  const [maxScrollHeight, setMaxScrollHeight] = useState(null);
-  const [load, setLoad] = useState(false);
-  const [page, setPage] = useState(1);
+  const {
+    scrollY,
+    setScrollY,
+    items,
+    setItems,
+    maxScrollHeight,
+    setMaxScrollHeight,
+    windowSize,
+    setWindowSize,
+  } = useStore((state) => state);
+
+  const { load, setLoad, page, setPage } = useFlag((state) => state);
 
   const size = windowSize.width <= 768 ? 2 : 3;
 
   const getDataList = () => {
     fetchData(ITEMS_LENGTH, page).then((data) => {
-      setItems((prev) => [...prev, ...data]);
+      setItems([...items, ...data]);
       setLoad(false);
       setPage(page + 1);
     });
@@ -50,7 +56,7 @@ export const ListApp = () => {
 
   const handleScroll = useCallback(({ scrollOffset }) => {
     setScrollY(scrollOffset);
-  },[]);
+  }, []);
 
   useEffect(() => {
     getDataList();
@@ -83,16 +89,16 @@ export const ListApp = () => {
 
   const row = useCallback(
     ({ index, style }) => {
-      return (
-        <Row
-          windowWidth={windowSize.width}
-          style={style}
-          index={index}
-          items={items}
-        />
-      );
+      const rowData = {
+        windowWidth: windowSize.width,
+        style,
+        index,
+        items,
+      };
+
+      return <Row key={useId} {...rowData} />;
     },
-    [windowSize.width, items]
+    [items, windowSize.width]
   );
 
   if (!items.length) {

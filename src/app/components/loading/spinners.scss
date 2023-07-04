@@ -1,6 +1,7 @@
 @import "../../styles/variables.scss";
 .spinner,
-.data-spinner {
+.data-spinner,
+.img-spinner {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

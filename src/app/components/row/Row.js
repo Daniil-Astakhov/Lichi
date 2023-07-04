@@ -9,13 +9,12 @@ export const Row = ({ windowWidth, items, index, style }) => {
 
     return itemIndexes.map((itemIndex) => {
       const item = items[i + itemIndex];
-
       return (
         <div
           className={`${
             styles[`itemWrap${mobile ? "Mobile" : ""}${itemIndex}`]
           }`}
-          key={item?.id || item?.name}
+          key={item?.id}
           style={style}
         >
           <div className={styles.imgWrap}>
