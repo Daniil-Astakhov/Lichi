@@ -1,12 +1,11 @@
 "use client";
-import { useCallback, useEffect, useRef, useMemo, useId } from "react";
+import { useCallback, useEffect, useRef, useMemo } from "react";
 import { FixedSizeList as List } from "react-window";
 import { fetchData } from "../../lib/getProductList";
 import { Row } from "../row/Row";
 import { Spinner, LoadingPage } from "../loading/spinners";
-
-import styles from "../../styles/page.module.scss";
 import { useFlag, useStore } from "@/app/store";
+import styles from "../../styles/page.module.scss";
 
 const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
@@ -24,7 +23,6 @@ export const ListApp = () => {
     windowSize,
     setWindowSize,
   } = useStore((state) => state);
-
   const { load, setLoad, page, setPage } = useFlag((state) => state);
 
   const size = windowSize.width <= 768 ? 2 : 3;
@@ -61,7 +59,6 @@ export const ListApp = () => {
   useEffect(() => {
     getDataList();
     getWindowSize();
-
     const handleResize = () => {
       getWindowSize();
     };
@@ -96,7 +93,7 @@ export const ListApp = () => {
         items,
       };
 
-      return <Row key={useId} {...rowData} />;
+      return <Row {...rowData} />;
     },
     [items, windowSize.width]
   );

@@ -4,12 +4,6 @@
     width: 100%;
   }
 
-  .img {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 60vw;
-  }
   .description {
     display: none;
     position: relative;
@@ -54,25 +48,21 @@
 
   .price {
     font-size: 10px;
-
-
   }
 }
 @media (max-width: 400px) {
-  .name{
+  .name {
     margin-top: 0;
-    
   }
-  .price{
+  .price {
     height: 30px;
   }
 }
 @media (max-width: 340px) {
-  .name{
+  .name {
     margin-top: 0;
-    
   }
-  .price{
+  .price {
     font-size: 8px;
   }
 }
