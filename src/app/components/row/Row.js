@@ -1,8 +1,8 @@
 import Link from "next/link";
 import styles from "../../styles/page.module.scss";
-import { useStore, memo } from "@/app/store";
+import { useStore } from "@/app/store";
 
-export const Row = memo(({ windowWidth, items, index, style }) => {
+export const Row = ({ windowWidth, items, index, style }) => {
   const { setCurrentPos } = useStore((state) => state);
   const mobile = windowWidth <= 768;
   const i = mobile ? index * 2 : index * 3;
@@ -52,4 +52,4 @@ export const Row = memo(({ windowWidth, items, index, style }) => {
     });
   };
   return <div className={styles.row}>{renderItems()}</div>;
-});
+};

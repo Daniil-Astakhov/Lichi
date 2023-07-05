@@ -27,7 +27,3 @@ export default function Card({
     </div>
   );
 }
-
-const a = [1, 2, 3, 4, 5, 6, 7, 7];
-
-console.log(a.find(4));
