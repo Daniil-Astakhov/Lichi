@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useMemo } from "react";
+import { useCallback, useEffect, useRef, useMemo, memo } from "react";
 import { FixedSizeList as List } from "react-window";
 import { fetchData } from "../../lib/getProductList";
 import { Row } from "../row/Row";
@@ -11,7 +11,7 @@ const ROW_HEIGHT_MOB = 0.72;
 const ROW_HEIGHT_DESK = 0.51;
 const ITEMS_LENGTH = 12;
 
-export const ListApp = () => {
+export const ListApp = memo(() => {
   const listRef = useRef(null);
   const {
     scrollY,
@@ -128,4 +128,4 @@ export const ListApp = () => {
       <div className={styles.load}>{load && <Spinner />}</div>
     </div>
   );
-};
+});
